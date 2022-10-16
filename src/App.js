@@ -1,7 +1,13 @@
 import './App.css';
+import Layout from './layout/Layout';
+import Router from './Router';
 
 function App() {
-  return <div>setting</div>;
+  return (
+    <Layout>
+      <Router />
+    </Layout>
+  );
 }
 
 export default App;
