@@ -8,12 +8,13 @@ const SignUp = () => {
     password: '',
     confirmPassword: '',
   });
-  const { email, password, confirmPassword } = inputValue;
+  const { email, password } = inputValue;
 
   const navigate = useNavigate();
 
   const isValidEmail = email.includes('@') && email.includes('.');
   const isValidPassword = password.length >= 8;
+  const isValidate = isValidEmail && isValidPassword;
 
   const handleInput = (e) => {
     const { id, value } = e.target;
@@ -26,23 +27,20 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isValidEmail || !isValidPassword) {
+    if (isValidate) {
       alert('비밀번호는 8자 이상 입력해주세요');
       return;
     }
-    if (password !== confirmPassword) {
-      alert('비밀번호가 다릅니다');
-      return;
-    }
     try {
-      await api.post('/auth/signup', {
+      const response = await api.post('/auth/signup', {
         email,
         password,
       });
       alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다');
-      // navigate('/');
+      localStorage.setItem('authorization', response.data.access_token);
+      navigate('/');
     } catch (error) {
-      throw new Error(error);
+      alert(error.response.data.message);
     }
   };
 
@@ -78,21 +76,12 @@ const SignUp = () => {
             비밀번호
           </label>
         </div>
-        <div className='relative z-0 mb-6 w-full'>
-          <input
-            id='confirmPassword'
-            type='password'
-            name='repeat_password'
-            className='input peer'
-            placeholder=' '
-            required
-            onChange={handleInput}
-          />
-          <label htmlFor='floating_repeat_password' className='input-helper'>
-            비밀번호 확인
-          </label>
-        </div>
-        <button type='submit' className='btn-sm'>
+        <button
+          type='submit'
+          className={`btn-sm ${
+            !isValidate && `bg-blue-400 cursor-not-allowed`
+          }`}
+          disabled={!isValidate}>
           회원가입
         </button>
         <div className='text-sm text-center mt-4'>

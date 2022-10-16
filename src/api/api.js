@@ -1,15 +1,25 @@
 import axios from 'axios';
 
+const access_token = localStorage.getItem('authorization');
+
 export const api = axios.create({
+  withCredentials: false,
   baseURL: 'https://pre-onboarding-selection-task.shop/',
   headers: {
-    'Content-type': 'application/json',
+    'Content-Type': 'application/json; charset=utf-8',
   },
 });
 
-// 매 실행 시 토큰값 넣기, 없으면 null값이 들어간다
-// api.interceptors.request.use(function (config) {
-//   const access_token = localStorage.getItem('Authorization');
-//   config.headers.common['Authorization'] = `${access_token}`;
-//   return config;
-// });
+if (access_token)
+  api.interceptors.request.use(function (config) {
+    config.headers.common['Authorization'] = `Bearer ${access_token}`;
+    return config;
+  });
+
+export const todoApi = axios.create({
+  withCredentials: false,
+  baseURL: 'https://pre-onboarding-selection-task.shop/',
+  headers: {
+    Authorization: `Bearer ${access_token}`,
+  },
+});

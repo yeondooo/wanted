@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api/api';
 
@@ -21,7 +21,6 @@ const SignIn = () => {
       ...inputValue,
       [id]: value,
     });
-    console.log(email);
   };
 
   const handleSubmit = async (e) => {
@@ -31,15 +30,35 @@ const SignIn = () => {
       return;
     }
     try {
-      await api.post('/auth/signin', {
+      const response = await api.post('/auth/signin', {
         email,
         password,
       });
+      localStorage.setItem('authorization', response.data.access_token);
       navigate('/todo');
     } catch (error) {
-      throw new Error(error);
+      if (error.response.data.message === 'Unauthorized') {
+        alert('비밀번호가 틀렸어요. 비밀번호를 확인해주세요');
+        return;
+      }
+      alert(error.response.data.message);
     }
   };
+
+  const token = localStorage.getItem('authorization');
+
+  const loginCheck = () => {
+    if (token) {
+      navigate('/todo');
+    } else {
+      navigate('/');
+    }
+  };
+
+  useEffect(() => {
+    loginCheck();
+  }, []);
+
   return (
     <div>
       <div className='text-lg font-bold text-center'>로그인</div>
@@ -72,9 +91,18 @@ const SignIn = () => {
             비밀번호
           </label>
         </div>
-        <button type='submit' className='btn-sm'>
-          로그인
-        </button>
+        {isValidEmail && isValidPassword ? (
+          <button type='submit' className='btn-sm'>
+            로그인
+          </button>
+        ) : (
+          <button
+            type='submit'
+            className='btn-sm bg-blue-400 cursor-not-allowed'
+            disabled>
+            로그인
+          </button>
+        )}
         <div className='text-sm text-center mt-4'>
           아이디가 없으신가요?
           <Link to='/signup' className='font-bold mx-1 hover:underline'>
