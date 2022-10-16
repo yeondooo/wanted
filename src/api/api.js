@@ -10,11 +10,11 @@ export const api = axios.create({
   },
 });
 
-if (access_token)
-  api.interceptors.request.use(function (config) {
-    config.headers.common['Authorization'] = `Bearer ${access_token}`;
-    return config;
-  });
+// if (access_token)
+//   api.interceptors.request.use(function (config) {
+//     config.headers.common['Authorization'] = `Bearer ${access_token}`;
+//     return config;
+//   });
 
 export const todoApi = axios.create({
   withCredentials: false,
