@@ -20,3 +20,10 @@ npm install
 ```
 npm start
 ```
+
+### 👀 구현 페이지
+```
+1.회원가입 2.로그인 3.투두리스트
+```
+<img width="1328" alt="image" src="https://user-images.githubusercontent.com/97602748/196524992-62e248dd-00d0-404e-95c1-69a883e9a449.png">
+
