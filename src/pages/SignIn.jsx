@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { api } from '../api/api';
+import APIAuth from '../apis/APIAuth';
+
+const token = localStorage.getItem('authorization');
 
 const SignIn = () => {
   const [inputValue, setInputValue] = useState({
@@ -13,6 +15,7 @@ const SignIn = () => {
 
   const isValidEmail = email.includes('@') && email.includes('.');
   const isValidPassword = password.length >= 8;
+  const isValidSignIn = isValidEmail && isValidPassword;
 
   const handleInput = (e) => {
     const { id, value } = e.target;
@@ -25,17 +28,13 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isValidEmail || !isValidPassword) {
-      alert('비밀번호는 8자 이상 입력해주세요');
-      return;
-    }
     try {
-      const response = await api.post('/auth/signin', {
+      const response = await APIAuth.signIn({
         email,
         password,
       });
       localStorage.setItem('authorization', response.data.access_token);
-      navigate('/todo');
+      navigate('/');
     } catch (error) {
       if (error.response.data.message === 'Unauthorized') {
         alert('비밀번호가 틀렸어요. 비밀번호를 확인해주세요');
@@ -45,13 +44,9 @@ const SignIn = () => {
     }
   };
 
-  const token = localStorage.getItem('authorization');
-
   const loginCheck = () => {
     if (token) {
       navigate('/todo');
-    } else {
-      navigate('/');
     }
   };
 
@@ -91,18 +86,14 @@ const SignIn = () => {
             비밀번호
           </label>
         </div>
-        {isValidEmail && isValidPassword ? (
-          <button type='submit' className='btn-sm'>
-            로그인
-          </button>
-        ) : (
-          <button
-            type='submit'
-            className='btn-sm bg-blue-400 cursor-not-allowed'
-            disabled>
-            로그인
-          </button>
-        )}
+        <button
+          type='submit'
+          className={`btn-sm bg-blue-700 ${
+            !isValidSignIn && 'bg-blue-400 cursor-not-allowed'
+          }`}
+          disabled={!isValidSignIn}>
+          로그인
+        </button>
         <div className='text-sm text-center mt-4'>
           아이디가 없으신가요?
           <Link to='/signup' className='font-bold mx-1 hover:underline'>

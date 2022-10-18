@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { api } from '../api/api';
+import APIAuth from '../apis/APIAuth';
 
 const SignUp = () => {
   const [inputValue, setInputValue] = useState({
@@ -14,7 +14,7 @@ const SignUp = () => {
 
   const isValidEmail = email.includes('@') && email.includes('.');
   const isValidPassword = password.length >= 8;
-  const isValidate = isValidEmail && isValidPassword;
+  const isValidSignUp = isValidEmail && isValidPassword;
 
   const handleInput = (e) => {
     const { id, value } = e.target;
@@ -27,17 +27,12 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isValidate) {
-      alert('비밀번호는 8자 이상 입력해주세요');
-      return;
-    }
     try {
-      const response = await api.post('/auth/signup', {
+      await APIAuth.signUp({
         email,
         password,
       });
       alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다');
-      localStorage.setItem('authorization', response.data.access_token);
       navigate('/');
     } catch (error) {
       alert(error.response.data.message);
@@ -78,10 +73,10 @@ const SignUp = () => {
         </div>
         <button
           type='submit'
-          className={`btn-sm ${
-            !isValidate && `bg-blue-400 cursor-not-allowed`
+          className={`btn-sm bg-blue-700 ${
+            !isValidSignUp && 'bg-blue-400 cursor-not-allowed'
           }`}
-          disabled={!isValidate}>
+          disabled={!isValidSignUp}>
           회원가입
         </button>
         <div className='text-sm text-center mt-4'>

@@ -1,44 +1,31 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import APITodo from '../apis/APITodo';
 
-const TodoForm = ({ setTodos }) => {
-  const [inputValue, setInputValue] = useState({ todo: '' });
-  const [isLoading, setIsLoading] = useState(false);
-  const { todo } = inputValue;
+const TodoForm = ({ todos, setTodos }) => {
+  const [inputValue, setInputValue] = useState('');
 
   const createTodo = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
-      const { data } = await axios.post(
-        `https://pre-onboarding-selection-task.shop/todos`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('authorization')}`,
-            'Content-Type': 'application/json; charset=utf-8',
-          },
-        },
-        {
-          todo,
-        }
-      );
-      setTodos(data);
+      const newTodo = {
+        todo: inputValue,
+      };
+      // remote에(서버) 추가
+      const { data } = await APITodo.createTodo(newTodo);
+      // local(내 환경)에 추가
+      setTodos([...todos, data]);
+      // 초기화
+      setInputValue('');
     } catch (error) {
-      alert(error.response.data.reason);
-    } finally {
-      setIsLoading(false);
+      console.log(error);
     }
   };
 
   const handleInput = (e) => {
-    const { id, value } = e.target;
-    setInputValue({
-      ...inputValue,
-      [id]: value,
-    });
+    const { value } = e.target;
+    setInputValue(value);
   };
-
-  if (isLoading) return <div>로딩중...</div>;
 
   return (
     <div>
@@ -47,6 +34,7 @@ const TodoForm = ({ setTodos }) => {
           <input
             id='todo'
             type='text'
+            value={inputValue}
             className='py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:border-blue-600'
             onChange={handleInput}
           />
