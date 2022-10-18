@@ -30,17 +30,15 @@ const TodoForm = ({ todos, setTodos }) => {
   return (
     <div>
       <form>
-        <div className='flex items-end'>
+        <div className="flex items-end">
           <input
-            id='todo'
-            type='text'
+            id="todo"
+            type="text"
             value={inputValue}
-            className='py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:border-blue-600'
+            className="py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:border-blue-600"
             onChange={handleInput}
           />
-          <button
-            className='text-blue-700 font-bold w-1/4'
-            onClick={createTodo}>
+          <button className="text-blue-700 font-bold w-1/4" onClick={createTodo}>
             추가
           </button>
         </div>

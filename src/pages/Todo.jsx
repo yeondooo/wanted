@@ -37,7 +37,12 @@ const Todo = () => {
         <p>TODO LIST</p>
       </div>
       <TodoForm todos={todos} setTodos={setTodos} />
-      <TodoList todos={todos} setTodos={setTodos} />
+      <div className="pt-4">
+        {todos &&
+          todos.map((item) => {
+            return <TodoList key={item.id} todos={todos} setTodos={setTodos} item={item} />;
+          })}
+      </div>
     </div>
   );
 };
