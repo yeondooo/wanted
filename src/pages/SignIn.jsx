@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import APIAuth from '../apis/APIAuth';
 
-const token = localStorage.getItem('authorization');
-
 const SignIn = () => {
+  const token = localStorage.getItem('authorization');
+  const navigate = useNavigate();
+
   const [inputValue, setInputValue] = useState({
     email: '',
     password: '',
   });
-  const { email, password } = inputValue;
 
-  const navigate = useNavigate();
+  const { email, password } = inputValue;
 
   const isValidEmail = email.includes('@') && email.includes('.');
   const isValidPassword = password.length >= 8;
@@ -34,7 +34,7 @@ const SignIn = () => {
         password,
       });
       localStorage.setItem('authorization', response.data.access_token);
-      navigate('/');
+      navigate('/todo');
     } catch (error) {
       if (error.response.data.message === 'Unauthorized') {
         alert('비밀번호가 틀렸어요. 비밀번호를 확인해주세요');

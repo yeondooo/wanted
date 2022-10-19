@@ -5,12 +5,11 @@ import TodoForm from '../components/TodoForm';
 import { FcTodoList } from 'react-icons/fc';
 import APITodo from '../apis/APITodo';
 
-const token = localStorage.getItem('authorization');
-
 const Todo = () => {
-  const [todos, setTodos] = useState([]);
-
+  const token = localStorage.getItem('authorization');
   const navigate = useNavigate();
+
+  const [todos, setTodos] = useState([]);
 
   const fetchTodos = async () => {
     try {
